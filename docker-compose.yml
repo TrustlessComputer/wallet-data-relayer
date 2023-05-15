@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  api_service:
+    restart: always
+    container_name: api_service
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - "8100:8100"
+    entrypoint:
+      - ./backend
+    working_dir: /app
+    env_file:
+      - .env.docker
+    depends_on:
+      - api_redis_service
+      
+  api_redis_service:
+    restart: always
+    container_name: api_redis_service
+    image: docker.io/bitnami/redis:6.2
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - "6379:6379"

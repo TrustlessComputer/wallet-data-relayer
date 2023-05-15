@@ -27,10 +27,10 @@ func (r *Router) Start() error {
 	router.Use(cors.AllowAll())
 
 	relayer := router.Group("/relayer")
-	relayer.GET("/data")
-	relayer.POST("/data")
+	relayer.GET("/data", r.GetData)
+	relayer.POST("/data", r.PostData)
 
-	err = router.Run("127.0.0.1:" + r.Port)
+	err = router.Run("0.0.0.0:" + r.Port)
 	if err != nil {
 		return err
 	}
