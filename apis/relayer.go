@@ -20,12 +20,14 @@ func (r *Router) PostData(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "Bad Request",
+			"error":   err.Error(),
 		})
 		return
 	}
 	if data.ID == "" || data.Data == "" {
 		c.JSON(400, gin.H{
 			"message": "Bad Request",
+			"error":   "ID or Data is empty string",
 		})
 		return
 	}
@@ -34,6 +36,7 @@ func (r *Router) PostData(c *gin.Context) {
 		if origin == "" {
 			c.JSON(400, gin.H{
 				"message": "Bad Request",
+				"error":   "Origin is empty string",
 			})
 			return
 		}
@@ -44,6 +47,7 @@ func (r *Router) PostData(c *gin.Context) {
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Internal Server Error",
+			"error":   err.Error(),
 		})
 		return
 	}
