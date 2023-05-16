@@ -1,13 +1,20 @@
 package apis
 
-import "github.com/gin-gonic/gin"
+import (
+	"encoding/json"
+
+	"github.com/gin-gonic/gin"
+)
 
 type StoreData struct {
-	Data string `json:"data"`
-	ID   string `json:"id"`
+	Data    string `json:"data"`
+	Message string `json:"message"`
+	Site    string `json:"site"`
+	ID      string `json:"id"`
 }
 
 func (r *Router) PostData(c *gin.Context) {
+	origin := c.Request.Header.Get("Origin")
 	var data StoreData
 	err := c.BindJSON(&data)
 	if err != nil {
@@ -22,8 +29,18 @@ func (r *Router) PostData(c *gin.Context) {
 		})
 		return
 	}
+	if origin == "" {
+		origin = c.Request.Header.Get("origin")
+		if origin == "" {
+			c.JSON(400, gin.H{
+				"message": "Bad Request",
+			})
+			return
+		}
+	}
+	data.Site = origin
 
-	err = r.Redis.SetStringDataWithExpTime(data.ID, data.Data, 600)
+	err = r.Redis.SetDataWithExpireTime(data.ID, data, 600)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Internal Server Error",
@@ -55,5 +72,13 @@ func (r *Router) GetData(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, gin.H{"data": data})
+	var storeData StoreData
+	err = json.Unmarshal([]byte(*data), &storeData)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Internal Server Error",
+		})
+		return
+	}
+	c.JSON(200, gin.H{"data": storeData})
 }

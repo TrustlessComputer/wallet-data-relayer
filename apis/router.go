@@ -23,7 +23,6 @@ func (r *Router) Start() error {
 	var err error
 	router := gin.Default()
 	router.Use(gin.Recovery())
-
 	router.Use(cors.AllowAll())
 
 	relayer := router.Group("/relayer")
