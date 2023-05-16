@@ -28,6 +28,8 @@ func (r *Router) Start() error {
 	relayer := router.Group("/relayer")
 	relayer.GET("/data", r.GetData)
 	relayer.POST("/data", r.PostData)
+	relayer.GET("/result", r.GetData)
+	relayer.POST("/result", r.PostData)
 
 	err = router.Run("0.0.0.0:" + r.Port)
 	if err != nil {
