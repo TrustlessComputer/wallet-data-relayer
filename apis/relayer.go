@@ -16,7 +16,7 @@ type StoreData struct {
 func (r *Router) PostData(c *gin.Context) {
 	origin := c.Request.Header.Get("Origin")
 	var data StoreData
-	err := c.BindJSON(&data)
+	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "Bad Request",
@@ -87,9 +87,9 @@ func (r *Router) GetData(c *gin.Context) {
 }
 
 func (r *Router) PostResult(c *gin.Context) {
-	origin := c.Request.Header.Get("Origin")
+	// origin := c.Request.Header.Get("Origin")
 	var data StoreData
-	err := c.BindJSON(&data)
+	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"message": "Bad Request",
@@ -104,17 +104,17 @@ func (r *Router) PostResult(c *gin.Context) {
 		})
 		return
 	}
-	if origin == "" {
-		origin = c.Request.Header.Get("origin")
-		if origin == "" {
-			c.JSON(400, gin.H{
-				"message": "Bad Request",
-				"error":   "Origin is empty string",
-			})
-			return
-		}
-	}
-	data.Site = origin
+	// if origin == "" {
+	// 	origin = c.Request.Header.Get("origin")
+	// 	if origin == "" {
+	// 		c.JSON(400, gin.H{
+	// 			"message": "Bad Request",
+	// 			"error":   "Origin is empty string",
+	// 		})
+	// 		return
+	// 	}
+	// }
+	// data.Site = origin
 
 	err = r.Redis.SetDataWithExpireTime(data.ID+"_result", data, 120)
 	if err != nil {
