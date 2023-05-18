@@ -43,7 +43,7 @@ func (r *Router) PostData(c *gin.Context) {
 	}
 	data.Site = origin
 
-	err = r.Redis.SetDataWithExpireTime(data.ID+"_data", data, 120)
+	err = r.Redis.SetDataWithExpireTime(data.ID+"_data", data, 10800)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Internal Server Error",
@@ -120,7 +120,7 @@ func (r *Router) PostResult(c *gin.Context) {
 	// }
 	// data.Site = origin
 
-	err = r.Redis.SetDataWithExpireTime(data.ID+"_result", data, 120)
+	err = r.Redis.SetDataWithExpireTime(data.ID+"_result", data, 10800)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Internal Server Error",
